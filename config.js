@@ -3,7 +3,7 @@
  */
 self.KUIKI_CONFIG = {
   // GASウェブアプリのURL（デプロイしたときに出る https://script.google.com/macros/s/……/exec）
-  gasUrl: '',
+  gasUrl: 'https://script.google.com/macros/s/AKfycbwve36SRmKSIlmdBu9HQjCUZB3qwlnzncf56OIa3LWIweIXon33msenJYqpHNa-G6gEeQ/exec',
 
   // 利用カードのQRコードに入れるアドレス（このアプリを置いたURL）。空なら、今開いているアドレスを使う
   appUrl: '',
