@@ -145,9 +145,14 @@
   const leaveHooks = [];
   function leaveView() { leaveHooks.forEach(f => { try { f(); } catch (e) { /* 次へ */ } }); destroyMap(); stopCamera(); }
 
+  // 区域データ（territories.json）を読み終わる前は、それが要らない画面だけ出す
+  const NO_GEO_VIEWS = ['start', 'key', 'scan', 'diag'];
+  let geoWait = false;
   function render() {
     app.classList.remove('fill');
     const fn = views[view.name];
+    if (fn && !K.geo && NO_GEO_VIEWS.indexOf(view.name) < 0) { geoWait = true; app.innerHTML = '<div class="boot">区域のデータを読み込んでいます…</div>'; return; }
+    geoWait = false;
     if (fn) fn(view);
     else app.innerHTML = '<div class="boot">読み込んでいます…</div>';
   }
@@ -1322,16 +1327,19 @@
     await K.load();
     const urlKey = readUrlKey();
     if (urlKey && urlKey !== K.state.key) await K.setKey(urlKey, false, 'QRコード');
-    try { await K.loadGeo(); } catch (e) {
+    // 区域データ（約1.5MB）は裏で読み、カードがまだない人には先に最初の画面を出す
+    const geoP = K.loadGeo();
+    view = { name: K.state.key ? 'home' : 'start' };
+    try { history.replaceState({ v: view }, ''); } catch (e) { /* 使えない環境 */ }
+    if (!K.state.demo) render();
+    try { await geoP; } catch (e) {
       app.innerHTML = '<main class="start"><p class="notice">区域のデータを読めませんでした。電波のある所で開き直してください。</p></main>';
       return;
     }
     if (K.state.demo) { try { await K.demo.init(); } catch (e) { await K.forget(); } }
     registerSW();
     K.basemap.init();
-    view = { name: K.state.key ? 'home' : 'start' };
-    try { history.replaceState({ v: view }, ''); } catch (e) { /* 使えない環境 */ }
-    render();
+    if (K.state.demo || geoWait || view.name === 'home') render();
     if (K.state.key) {
       K.refresh().then(() => K.tiles.saveAll()).catch(e => { if (e.code === 'BAD_KEY' || e.code === 'STOPPED') K.emit('auth', e); else render(); });
       K.sync.kick(800);

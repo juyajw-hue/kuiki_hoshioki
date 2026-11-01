@@ -6,7 +6,7 @@
 (function () {
   'use strict';
   const K = (window.K = window.K || {});
-  K.VERSION = '0.12.0';
+  K.VERSION = '0.12.1';
 
   K.cfg = Object.assign({
     gasUrl: '',                 // GASウェブアプリのURL（…/exec）。空ならお試し版だけ使える

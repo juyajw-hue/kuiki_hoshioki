@@ -5,7 +5,7 @@
  *   国土地理院の地図（地理院タイル）・建物のデータ（.pbf）・基準の地図（gsi-base.json）は保存しない。
  * アプリを直したら、下の VERSION を上げる（上げると、次に開いたときに新しい版に入れ替わる）
  */
-const VERSION = '0.12.0-1';
+const VERSION = '0.12.1-1';
 const SHELL = 'kuiki-shell-' + VERSION;
 const TILES = 'kuiki-tiles-v2';
 const OLD = ['kuiki-tiles-v1']; // 0.8.0までの保存（地理院タイルの写し）。消す
